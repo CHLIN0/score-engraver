@@ -1,0 +1,13 @@
+# created by scripts/setup.sh
+.venv/
+
+# scratch space for engraving runs
+work/
+out/
+
+# python bytecode
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
