@@ -59,7 +59,7 @@ reference MIDI to MusicXML, never to engrave).
 
 ```bash
 brew install lilypond uv yt-dlp ffmpeg          # macOS
-git clone https://github.com/<you>/score-engraver.git ~/.claude/skills/score-engraver
+git clone https://github.com/CHLIN0/score-engraver.git ~/.claude/skills/score-engraver
 bash ~/.claude/skills/score-engraver/scripts/setup.sh
 ```
 
