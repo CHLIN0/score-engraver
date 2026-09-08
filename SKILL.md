@@ -26,8 +26,22 @@ LilyPond 譜源、每頁 PNG，以及 `engrave-report.json`。
 
 環境：`scripts/` 下的 Python 用本 skill 的 `.venv/bin/python`；排版用 `lilypond`（PATH）；
 `ffmpeg`、`yt-dlp` 供來源蒐集；AMT 轉譜（音訊 → MIDI）用呼叫者指定的模型（例如 Transkun：
-`<amt-env>/bin/transkun audio.wav out.mid --device cpu`）。所有中間檔放呼叫者
-指定的 `--out` 目錄。
+`<amt-env>/bin/transkun audio.wav out.mid --device cpu`）。
+
+**一次編譜的所有檔案只放在呼叫者指定的 `--out` 一個目錄裡**（沒指定就問，或用
+`./score-engraver-<曲名>`），分四類，交付時要能一句話說清楚哪些留、哪些可刪：
+
+```
+<out>/
+  score.pdf  score.ly  final.mid  page-*.png       ← 成品：使用者要的東西
+  engrave-report.json  reconciliation.json          ← 紀錄：為什麼這樣編，很小，建議留
+  perf.mid  beats.json  analysis.json               ← 證據：小，重跑要用
+  dossier/  refs/                                   ← 來源：影片與音訊，通常佔九成空間
+  render/  compare.midi  draft.musicxml             ← 中間產物：隨時可從 score.ly 重生
+  scratch/                                          ← 你自己的裁圖、暫存 .ly、比對輸出，一律放這裡
+```
+
+不要把暫存檔散在 `<out>/` 根目錄或別的地方；你產生的每一個檔案都要在上面找得到位置。
 
 ## 流程
 
@@ -135,6 +149,12 @@ LilyPond 譜源、每頁 PNG，以及 `engrave-report.json`。
    `out/engrave-report.json`。回覆用一段話講：來源與採納／拒絕、曲目判斷、調拍速、分手方法、
    你改了草稿的哪些類型的東西、每頁 rubric 分數、殘留缺陷。
 
+   **然後交代檔案**（必做，使用者不會自己去翻目錄）：跑 `du -sh <out>/*` 取實際大小，分兩欄列出
+   ——（a）**留**：PDF、`score.ly`、`final.mid`、頁圖、兩份 json；（b）**可刪**：`dossier/`、
+   `refs/`、`render/`、`compare.midi`、`draft.musicxml`、`scratch/`，通常是總量九成以上，刪掉
+   不影響已交付的譜。**你不要自己刪**（見硬規則）：在回覆正文放一個遞迴刪除那六個路徑的指令，
+   讓使用者自己決定，並用一句話說明代價——要再編一次就得重新下載影片、重跑 AMT。
+
 **衍生輸出（要求時才做）——轉調**：`python scripts/transpose_score.py out/score.ly out/<key>/score.ly
 --from ges --to f --tag "F major"`，在 `\score` 外面包一層 `\transpose`，所有編譜決定（分手、連結、
 滾奏、和弦記號、歌詞、分行分頁）原樣保留，不重編。腳本會印出每個 `\key` 轉完的調與臨時記號數量，
@@ -164,3 +184,6 @@ flag 的小節要自己看一眼），檢查 `\ottava` 與加線是否跨過門�
 - 不改 `scripts/` 與 `assets/`；腳本缺口寫進 `residual_issues`。
 - 曲目 confidence 低就寫 low；不因為「像」就硬套參考的拍號或調。
 - 不下載 MuseScore.com 的檔案；影片只用來看與轉譜。
+- **不自己刪檔**，包括自己產生的暫存檔。把要刪的東西列清楚（路徑、大小、為什麼可以刪），指令
+  放進回覆正文讓使用者執行。原因有二：刪除不可逆；而且執行環境的安全層通常會攔——連帶要注意
+  指令文字只放在回覆裡，不要寫進你執行的命令字串（含註解），否則同樣會被攔。

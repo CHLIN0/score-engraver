@@ -167,3 +167,8 @@ machine-readable editions as ground truth, and two pop arrangements with human t
 reference. Each cycle: an agent engraved the pieces from the skill as written, the results were
 compared page by page and note by note against the editions and the recordings, and the skill,
 scripts and reference documents were corrected. `references/lessons.md` records all of it.
+
+## License
+
+MIT — see [LICENSE](LICENSE). The example page is an engraving of J. S. Bach, BWV 846
+(public domain); no copyrighted sheet music is included in this repository.
